@@ -15,7 +15,19 @@
 \usepackage{csquotes}
 \usepackage{longtable}
 
+
+
 \begin{document}
+
+\section*{Correction notice}
+In Section \ref{quality}, it is indicated that the model with the highest $C_v$ coherence score was chosen for analysis. Unfortunately, it turned out that the wrong model was manually loaded for analysis. As explained in Section \ref{parameters} the algorithm used in this paper has the option for it's user to specify a so-called random state: a seed that the model uses for the required randomness. While processing the results from the model search phase, two random states got mislabeled, resulting in the wrong model being selected for analysis. The number of topics is equal between the two models, but the chosen seed was different and so was the coherence. The best model had a $C_v$ of 0.517, while the wrongfully chosen model scored 0.504.  
+
+In terms of topics, the two models differ in various ways. Comparing the two, 26 of the topics overlap in a one-to-one relation. For the other 10 topics there are differences. Some examples are given, from the perspective of the 'right' model, i.e., the one with a higher $C_v$ coherence: The two topics that were labelled as \textit{Social networks} and \textit{Social media use} seems to have 'merged' into one, so have the topics of \textit{Cryptography} and \textit{Signature}. Additionally, this model uncovered a specific topic with terms like \textit{image} and \textit{video} as distinguishing terms, as well as a topic with \textit{blockchain}, \textit{voting}, and \textit{payment}. These terms were previously contained in different topics. On the other hand, the topics of \textit{Big data}, \textit{Office design} and \textit{Application security} are not uncovered as such by the 'right' model. This once again signals the somewhat arbitrary nature of a topic model. As mentioned in Section \ref{search}, every model we choose to analyse is one of various possible models with a different representation of the underlying documents.
+
+Because this type of modelling is very susceptible to changes in factors like the random state, the discussion in Section \ref{discussion} already explicitly avoids drawing conclusions that would not be generalizable to different models. At a first glance, partly repeating the analysis of Section \ref{comparison} shows that the specific relations between communities and topics change as an effect of the new topic model, but the general pattern of some 1-on-1 relations, larger communities covering multiple topics, and differences of which we cannot know the reasons hold. Because the observations in this paper are not on the level of specific patterns in the privacy literature, but mainly on this method's usage and usefulness, all findings remain valid.
+
+ 
+
 %
 \title{Topical Analysis of Privacy Literature, with an Application on Citation Network Interpretation} % \thanks{Supported by organization x.}}
 %
@@ -119,6 +131,7 @@ The labeling will be done by two annotators, who separately review each topic’
 Since Van Dijk’s \cite{van_dijk_pillars_nodate} query of literature mentioning privacy, 126 works have been retracted or otherwise removed. Of the 83,033 works left, 24,982 are without keywords, of which 3534 without abstract. Inspecting a sample shows that these are primarily complete books and conference introductions. 67 works are missing just abstract but have keywords. All documents without abstract are removed since the lack of data would not allow us to properly assign these works a distribution of topics. We don’t have a reason to believe this removal causes bias. Copyright notices were removed with a custom regex available in the code. The above-described relative pruning steps reduced the number of terms from 75148 to 2421; 96.78\% of words occurred too little or too often to contribute to the discovery of latent topics. It is noteworthy that the term \textit{privacy} was not removed, while it is the keyword upon which the papers were selected. This turned out to be because more than 1\% of documents were added to the database because \textit{privacy} was in the keywords added by the publisher. These publisher keywords were not included in this analysis, as described in Section \ref{retrieval}.
 
 \subsection{Model search}
+\label{search}
 An initial grid search was performed on models with a number of topics ($K$) between 1 and 361. The steps between the different values were based on the power function $x^2$ (1, 4, 9, 16, etc.). This sequence was chosen ad-hoc after some exploratory model generation showed covariance measurements to be less sensitive to changes in topic numbers in the higher regions. The first search across two random states showed that covariance was maximal somewhere between 25 and 49. The search was then deepened to include a total of four random states and additional values for $K$ in between the values in the original sequence. Further exploration of interactions between variables, as described in Section \ref{parameters} was not possible: the current model search already took many days on a regular PC. Nevertheless, the most important variables could be varied in a structured manner, generating a total of 56 models to evaluation.
 
 Most models in this range had a $C_v$ value between 0.32 and 0.49, showing a clear pattern where $C_v$ scores increased sharply for the initial 'increase' in $K$. After the peak, $C_v$ scores slowly decreased for models with more topics. The highest scoring model was one uncovering 36 topics, with a $C_v$ score of 0.517. This number of topics was not always the local maximum across the different random states, suggesting an interaction between the random state and the effect of $K$. The fact that the ideal number of topics is not the same for all random states can be interpreted as evidence that multiple coherent topic models exist. Although the highest scoring model is chosen for interpretation, we have to keep in mind that we are looking at one of many fitting topic models. 
@@ -182,6 +195,7 @@ A few topics stand out. Topic 25 seems to include both the very specific topic o
 To get a sense of relations between the different topics, we can make a (Pearson) correlation matrix of the occurrence of topics within the documents, which can be found in Figure \ref{fig:triangle}. The overall impression this gives is good: Topics seldom correlate much, and if they do, the coefficient is often negative. This is a sign of good separation between them. Where topics positively correlate the strongest are understandable. The high correlation between cloud computing and cloud storage, for instance, is typical for this method. Since the distribution is based on words, a single word relating to multiple real-world subjects will make topics hard to distinguish. In this case, other words can be used to differentiate between the topics, like the frequently occurring but not co-occurring \textit{storage} and \textit{computation}, see table \ref{tab:topic model}, correlations like these are to be expected.
 
 \subsection{Comparison to citation network}
+\label{comparison}
 We compare the model's assigned distribution of topics for each paper to the classification made by dividing the data into communities using the Louvain method, as done by Van Dijk \cite{van_dijk_pillars_nodate}. To aid this analysis, we visualize the relative distribution of topics within each community as a heatmap. Numbers shown in Figure \ref{fig:square} are the average proportions for topic occurrence within each community. Communities on the y-axis are ordered from largest to smallest. From \textit{individual privacy and law} containing about 16.2\% of publications to \textit{smart grid} containing about 1.8\%. The latent topics as discovered by the topic model cannot be ordered by size in this way, since a document is not assigned to a single topic. The topics are therefore not in any specific order.
 
 \begin{figure}
@@ -216,5 +230,10 @@ More research into these methods is essential before these novel applications ca
 
 \bibliographystyle{splncs04}
 \bibliography{bibfile}
+
+
+
+
+
 
 \end{document}
