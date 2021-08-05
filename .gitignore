@@ -2,5 +2,5 @@
 data_for_interpretation.csv
 data_merged_and_filtered.csv
 .DS_Store
-.ipynb_checkpoints/bibliometric_topic_modeling-checkpoint.ipynb
-.ipynb_checkpoints/exploration-checkpoint.ipynb
+.ipynb_checkpoints/
+data/__MACOSX
